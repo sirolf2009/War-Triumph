@@ -31,5 +31,18 @@
   		<artifactId>networking</artifactId>
   		<version>0.0.1-SNAPSHOT</version>
   	</dependency>
+  	<dependency>
+	<groupId>com.badlogicgames.gdx</groupId>
+	<artifactId>gdx</artifactId>
+	<version>1.5.3</version>
+</dependency>
+  	
   </dependencies>
+  
+  <repositories>
+    <repository>
+      <id>gdx-nightlies</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    </repository>
+  </repositories>
 </project>
