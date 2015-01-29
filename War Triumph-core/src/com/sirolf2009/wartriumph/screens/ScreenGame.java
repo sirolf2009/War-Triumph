@@ -29,6 +29,7 @@ import com.sirolf2009.wartriumph.graphics.Textures;
 import com.sirolf2009.wartriumph.input.InputAdapterGame;
 import com.sirolf2009.wartriumph.network.NetworkManager;
 import com.sirolf2009.wartriumph.packet.PacketDespawnEntity;
+import com.sirolf2009.wartriumph.stages.StageConversation;
 import com.sirolf2009.wartriumph.world.WorldWarTriumph;
 
 public class ScreenGame implements Screen {
@@ -45,6 +46,8 @@ public class ScreenGame implements Screen {
 	private boolean isPaused;
 	public TiledMap map;
 	private OrthogonalTiledMapRenderer mapRenderer;
+	private InputMultiplexer inputMultiPlexer;
+	private StageConversation stageConversation;
 	
 	public static Logger log = new Logger("WarTriumph");
 
@@ -94,8 +97,9 @@ public class ScreenGame implements Screen {
 
 		lastTime = System.currentTimeMillis();
 
-		InputMultiplexer inputMultiPlexer = new InputMultiplexer();
+		inputMultiPlexer = new InputMultiplexer();
 		inputMultiPlexer.addProcessor(new InputAdapterGame());
+		inputMultiPlexer.addProcessor(hud);
 		Gdx.input.setInputProcessor(inputMultiPlexer);
 	}
 
@@ -131,6 +135,9 @@ public class ScreenGame implements Screen {
 			long time = System.currentTimeMillis();
 			long deltaTime = time - lastTime;
 			world.onUpdate(deltaTime);
+			if(stageConversation != null) {
+				stageConversation.act(deltaTime);
+			}
 			hud.act(deltaTime);
 			lastTime = time;
 
@@ -152,6 +159,9 @@ public class ScreenGame implements Screen {
 			font.draw(batch, "*0w, 1024w", 0, 1024);
 			batch.end();
 			hud.draw();
+			if(stageConversation != null) {
+				stageConversation.draw();
+			}
 			world.getPhysicsDebugRenderer().render(world.getPhysicsWorld(), camera.combined);
 		}
 	}
@@ -179,6 +189,21 @@ public class ScreenGame implements Screen {
 	@Override
 	public void resume() {
 		isPaused = false;
+	}
+
+	public StageConversation getStageConversation() {
+		return stageConversation;
+	}
+
+	public void setStageConversation(StageConversation stageConversation) {
+		if(stageConversation == null) {
+			inputMultiPlexer.removeProcessor(getStageConversation());
+			getStageConversation().dispose();
+		}
+		this.stageConversation = stageConversation;
+		if(stageConversation != null) {
+			inputMultiPlexer.addProcessor(getStageConversation());
+		}
 	}
 
 }

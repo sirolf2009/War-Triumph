@@ -5,10 +5,8 @@ import java.util.List;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-import com.sirolf2009.wartriumph.WarTriumph;
 import com.sirolf2009.wartriumph.ai.IEntityIntelligence;
 import com.sirolf2009.wartriumph.graphics.Textures;
-import com.sirolf2009.wartriumph.packet.PacketUpdatePos;
 import com.sirolf2009.wartriumph.world.WorldWarTriumph;
 
 public class Entity {
@@ -27,7 +25,6 @@ public class Entity {
 	private long entityID;
 	private WorldWarTriumph world;
 	private Rectangle bounds;
-	private long updatePacketBurnout;
 
 	public Entity() {
 		AIList = new ArrayList<IEntityIntelligence>();
@@ -47,12 +44,7 @@ public class Entity {
 		for(IEntityIntelligence ai : AIList) {
 			ai.onUpdate(this, deltaTime);
 		}
-		updatePacketBurnout -= deltaTime;
 		if(getX() != lastX || getY() != lastY) {
-			if(updatePacketBurnout <= 0) {
-				WarTriumph.instance.getGame().getNetworkManager().getSender().send(new PacketUpdatePos(this));
-				updatePacketBurnout = 1000;
-			}
 			setMoving(true);
 		} else {
 			setMoving(false);
@@ -79,7 +71,6 @@ public class Entity {
 	}
 
 	public void collide(Entity entity) {
-		System.out.println(this + " collides with "+entity);
 	}
 
 	public void render(SpriteBatch batch) {

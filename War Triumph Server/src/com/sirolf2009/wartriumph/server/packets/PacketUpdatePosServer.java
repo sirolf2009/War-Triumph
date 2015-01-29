@@ -15,7 +15,7 @@ import com.sirolf2009.wartriumph.packet.PacketUpdatePos;
 import com.sirolf2009.wartriumph.server.WarTriumphServer;
 
 public class PacketUpdatePosServer extends PacketUpdatePos {
-	
+
 	private RestAPI rest;
 
 	public PacketUpdatePosServer() {}
@@ -49,14 +49,19 @@ public class PacketUpdatePosServer extends PacketUpdatePos {
 
 	@Override
 	public void receivedOnServer(IHost host) {
-		try {
-			rest = WarTriumphServer.instance.getRest();
-			URI node = rest.nodes.fromID(Long.parseLong(entityID));
-			rest.nodes.addPropertyToNode(node, "posX", posX.toString());
-			rest.nodes.addPropertyToNode(node, "posY", posY.toString());
-		} catch (NumberFormatException | URISyntaxException e) {
-			e.printStackTrace();
-		}
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					rest = WarTriumphServer.instance.getRest();
+					URI node = rest.nodes.fromID(Long.parseLong(entityID));
+					rest.nodes.addPropertyToNode(node, "posX", posX.toString());
+					rest.nodes.addPropertyToNode(node, "posY", posY.toString());
+				} catch (NumberFormatException | URISyntaxException e) {
+					e.printStackTrace();
+				}
+			}
+		}).start();
 		host.getServer().broadcast(this, host);
 		//WarTriumphServer.instance.getWorld().findEntityByID(Integer.parseInt(entityID)).setX(Float.parseFloat(posX));
 		//WarTriumphServer.instance.getWorld().findEntityByID(Integer.parseInt(entityID)).setY(Float.parseFloat(posY));

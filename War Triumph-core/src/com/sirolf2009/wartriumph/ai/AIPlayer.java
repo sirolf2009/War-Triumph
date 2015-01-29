@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.sirolf2009.wartriumph.entity.Entity;
+import com.sirolf2009.wartriumph.entity.EntityPlayer;
 import com.sirolf2009.wartriumph.screens.ScreenGame;
 
 public class AIPlayer implements IEntityIntelligence {
@@ -18,7 +19,7 @@ public class AIPlayer implements IEntityIntelligence {
 
 	@Override
 	public void onUpdate(Entity entity, long deltaTime) {
-		if(Gdx.input.isTouched()) {
+		if(Gdx.input.isTouched() && !((EntityPlayer)entity).isInConversation()) {
 			OrthographicCamera camera = ScreenGame.camera;
 			float x = (Gdx.input.getX()+camera.position.x-(Gdx.app.getGraphics().getWidth()/2));
 			float y = (-Gdx.input.getY()+camera.position.y+(Gdx.app.getGraphics().getHeight()/2));

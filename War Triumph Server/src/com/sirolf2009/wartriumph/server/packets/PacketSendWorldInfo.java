@@ -24,11 +24,7 @@ public class PacketSendWorldInfo extends Packet {
 	
 	@Override
 	public void receivedOnServer(IHost host) {
-		for(int i = 0; i < WarTriumphServer.instance.getWorld().getEntities().size(); i++) {
-			Entity entity = WarTriumphServer.instance.getWorld().getEntities().get(i);
-			if(entity == null) {
-				continue;
-			}
+		for(Entity entity : WarTriumphServer.instance.getWorld().getEntities().values()) {
 			long entityID = entity.getEntityID();
 			int entityType = PacketSpawnEntity.entityClassToID.get(entity.getClass());
 			host.getSender().send(new PacketSpawnEntityServer(entityID, entityType));

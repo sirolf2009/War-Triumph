@@ -20,12 +20,15 @@ import com.sirolf2009.networking.Events.EventClientJoining;
 import com.sirolf2009.networking.Events.EventConnectionLost;
 import com.sirolf2009.networking.Events.EventInvalidPacketIDReceived;
 import com.sirolf2009.networking.Events.EventPacketReceived;
+import com.sirolf2009.networking.Events.EventPacketSend;
 import com.sirolf2009.networking.Host;
 import com.sirolf2009.networking.IHost;
 import com.sirolf2009.networking.IServer;
 import com.sirolf2009.networking.Packet;
 import com.sirolf2009.util.neo4j.NeoUtil;
 import com.sirolf2009.util.neo4j.rest.RestAPI;
+import com.sirolf2009.wartriumph.packet.PacketConversationChat;
+import com.sirolf2009.wartriumph.packet.PacketStartConversation;
 import com.sirolf2009.wartriumph.server.packets.PacketDespawnEntityServer;
 import com.sirolf2009.wartriumph.server.packets.PacketSendPlayer;
 import com.sirolf2009.wartriumph.server.packets.PacketSendWorldInfo;
@@ -43,7 +46,7 @@ public class WarTriumphServer implements IServer, Observer {
 	private RestAPI rest;
 
 	public static WarTriumphServer instance;
-	public static Log log = new SimpleLog("WarTriumph Server");
+	public static SimpleLog log = new SimpleLog("WarTriumph Server");
 
 	public WarTriumphServer(String path) throws IOException, URISyntaxException {
 		instance = this;
@@ -56,7 +59,8 @@ public class WarTriumphServer implements IServer, Observer {
 		hosts = new ArrayList<IHost>();
 		new Thread(connector).start();
 		
-		NeoUtil.log.setLevel(SimpleLog.LOG_LEVEL_ALL);
+		NeoUtil.log.setLevel(SimpleLog.LOG_LEVEL_OFF);
+		log.setLevel(SimpleLog.LOG_LEVEL_ALL);
 		
 		Scanner scanner = new Scanner(System.in);
 		while(scanner.hasNext()) {
@@ -89,8 +93,7 @@ public class WarTriumphServer implements IServer, Observer {
 		} else if(arg instanceof Events.EventPacketReceived) {
 			EventPacketReceived event = (EventPacketReceived) arg;
 			if(event.getPacket() instanceof PacketUpdatePosServer) {
-			} else {
-				log.info("Received packet "+event.getPacket());
+				log.info("Received packet "+event.getPacket() + " from " + ((Host)event.getCommunicator()).name);
 			}
 		} else if(arg instanceof Events.EventConnectionLost) {
 			EventConnectionLost event = (EventConnectionLost) arg;
@@ -98,7 +101,9 @@ public class WarTriumphServer implements IServer, Observer {
 			Socket socket = ((IHost)event.getCommunicator()).getSocket();
 			log.info(((Host)host).name+"@"+socket.getInetAddress()+" disconnected");
 			host.disconnect();
-		} else if(arg instanceof Events.EventPacketSend) {
+		} else if(arg instanceof EventPacketSend) {
+			EventPacketSend event = (EventPacketSend) arg;
+			log.info("Send packet "+event.getPacket()+" to "+((Host)event.getCommunicator()).name);
 		} else if(arg instanceof Events.EventInvalidPacketIDReceived) {
 			EventInvalidPacketIDReceived event = (EventInvalidPacketIDReceived) arg;
 			log.fatal("Invalid packet ID received: "+event.getPacketID());
@@ -200,6 +205,8 @@ public class WarTriumphServer implements IServer, Observer {
 		Packet.registerPacket(3, PacketSpawnEntityServer.class);
 		Packet.registerPacket(4, PacketSendWorldInfo.class);
 		Packet.registerPacket(5, PacketDespawnEntityServer.class);
+		Packet.registerPacket(6, PacketStartConversation.class);
+		Packet.registerPacket(7, PacketConversationChat.class);
 	}
 
 }

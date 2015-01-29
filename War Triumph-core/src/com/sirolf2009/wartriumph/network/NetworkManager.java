@@ -36,7 +36,9 @@ public class NetworkManager implements IClient, Observer {
 			socket = new Socket(host, 1200);
 			connector = new Connector(this, this);
 			this.playername = playername;
+			log = new Logger("Client - "+playername);
 			new Thread(connector).start();
+			log.setLevel(Logger.DEBUG);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 			System.exit(-1);
@@ -62,9 +64,7 @@ public class NetworkManager implements IClient, Observer {
 		} else if(arg instanceof EventPacketSend) {
 			EventPacketSend event = (EventPacketSend) arg;
 			Packet packet = event.getPacket();
-			if(!(packet instanceof PacketUpdatePos)) {
-				logDebug("Sending "+packet.getClass().getName()+":"+Packet.packetsPackettoID.get(packet.getClass()));
-			}
+			logDebug("Sending "+packet.getClass().getName()+":"+Packet.packetsPackettoID.get(packet.getClass()));
 		} else {
 			logError("Unkown update "+arg+" from "+o);
 		}
@@ -72,7 +72,6 @@ public class NetworkManager implements IClient, Observer {
 
 	public void logDebug(String msg) {
 		log.debug(msg);
-		System.out.println(msg);
 	}
 
 	public void logError(String msg) {

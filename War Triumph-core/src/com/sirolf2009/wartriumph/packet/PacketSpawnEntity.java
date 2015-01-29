@@ -44,7 +44,6 @@ public class PacketSpawnEntity extends Packet {
 	@Override
 	public void receivedOnClient(IClient client) {
 		try {
-			System.out.println(entityIDToClass.get(entityType));
 			Entity entity = (Entity) entityIDToClass.get(entityType).getConstructor(WorldWarTriumph.class).newInstance(WarTriumph.instance.getGame().getWorld());
 			entity.setWorld(WarTriumph.instance.getGame().getWorld());
 			entity.setEntityID(entityID);
