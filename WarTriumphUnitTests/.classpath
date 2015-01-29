@@ -33,6 +33,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/War Triumph-core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/WarTriumph-core"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
